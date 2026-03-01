@@ -44,7 +44,6 @@ This project includes:
 All portfolio-ready queries are available in:
 
 ---
----
 
 ## SQL Analysis (Key Queries)
 
