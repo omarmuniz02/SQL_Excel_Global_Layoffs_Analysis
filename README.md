@@ -44,6 +44,54 @@ This project includes:
 All portfolio-ready queries are available in:
 
 ---
+---
+
+## SQL Analysis (Key Queries)
+
+The analytical processing for this project was performed in MySQL before building the Excel dashboard. Below are representative queries used in the analysis.
+
+### Yearly Layoff Trends
+
+```sql
+SELECT YEAR(`date`) AS year,
+       SUM(total_laid_off) AS total_layoffs
+FROM layoffs_cleaned
+GROUP BY YEAR(`date`)
+ORDER BY year;
+```
+
+This query aggregates layoffs by year to identify overall trend patterns.
+
+---
+
+### Top 5 Companies by Layoffs Per Year
+
+```sql
+WITH company_year AS (
+    SELECT company,
+           YEAR(`date`) AS years,
+           SUM(total_laid_off) AS total_laid_off
+    FROM layoffs_cleaned
+    GROUP BY company, YEAR(`date`)
+),
+company_year_rank AS (
+    SELECT *,
+           DENSE_RANK() OVER (
+               PARTITION BY years
+               ORDER BY total_laid_off DESC
+           ) AS ranking
+    FROM company_year
+)
+SELECT *
+FROM company_year_rank
+WHERE ranking <= 5;
+```
+
+This query demonstrates:
+- Common Table Expressions (CTEs)
+- Window functions
+- Partition-based ranking
+- Year-over-year company segmentation
 
 ## Dashboard Preview
 
